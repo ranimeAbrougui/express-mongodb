@@ -5,6 +5,8 @@ const PORT = 6003;
 const connectDB = require("./DB/connectDB");
 const Images = require("./models/Image.js");
 connectDB();
+server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
 server.set("view engine", "ejs");
 server.get("/", async (request, response) => {
   // const images = [
@@ -18,6 +20,14 @@ server.get("/", async (request, response) => {
   const images = await Images.find();
   console.log(images);
   response.render("pages/index.ejs", { images });
+});
+server.post("/", async (request, response) => {
+  console.log(request.body);
+  // response.send(request.body);
+  // Images.create(request.body);
+  const { title, source, description, link } = request.body;
+  Images.create({ title, source, description, link });
+  response.redirect("/");
 });
 server.get("/name", (request, response) => {
   const name = "sami";
